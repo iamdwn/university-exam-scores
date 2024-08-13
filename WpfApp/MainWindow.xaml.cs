@@ -18,6 +18,7 @@ namespace WpfApp
         private List<StudentResult> csvData;
         private double elapsedTime;
         private int rows;
+        private List<StudentResult> results;
 
         public MainWindow()
         {
@@ -78,7 +79,7 @@ namespace WpfApp
             var reader = new DataReader(queue);
             var importer = new DataImporter(queue);
 
-            Task readTask = Task.Run(() => reader.ReadFromFile(filePath));
+            Task readTask = Task.Run(() => results = reader.ReadFromFile(filePath));
             Task importTask = Task.Run(() => rows = importer.ImportToDatabase());
 
             Task.WaitAll(readTask, importTask);
@@ -88,6 +89,7 @@ namespace WpfApp
             ElapsedTimeLabel.Content = $"Elapsed Time: {stopwatch.ElapsedMilliseconds / 1000.0}s";
             LinesInsertedLabel.Content = $"Lines Inserted: {rows}";
 
+            dtgResult.ItemsSource = results;
             MessageBox.Show("Imported successful !", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 

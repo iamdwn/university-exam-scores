@@ -62,14 +62,14 @@ public class DataImporter
 
             if (batch.Count >= 1000)
             {
-                rows = BulkInsert(batch);
+                rows += BulkInsert(batch);
                 batch.Clear();
             }
         }
 
         if (batch.Count > 0)
         {
-            BulkInsert(batch);
+            rows += BulkInsert(batch);
         }
 
         return rows;

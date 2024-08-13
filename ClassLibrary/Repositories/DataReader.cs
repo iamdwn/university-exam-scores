@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 public class DataReader
 {
     private readonly BlockingCollection<StudentResult> _queue;
+    private List<StudentResult> _results = new List<StudentResult>();
 
     public DataReader(BlockingCollection<StudentResult> queue)
     {
@@ -33,7 +34,7 @@ public class DataReader
     //    }
     //}
 
-    public void ReadFromFile(string filePath)
+    public List<StudentResult> ReadFromFile(string filePath)
     {
         using (var reader = new StreamReader(filePath))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -43,10 +44,12 @@ public class DataReader
 
             foreach (var record in records)
             {
+                _results.Add(record);
                 _queue.Add(record);
             }
         }
 
         _queue.CompleteAdding();
+        return _results;
     }
 }
