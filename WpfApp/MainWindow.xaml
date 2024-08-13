@@ -9,9 +9,19 @@
         <Label Content="Elapsed Time: 0s" Name="ElapsedTimeLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0"/>
         <Label Content="Lines Inserted: 0" Name="LinesInsertedLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,80,0,0"/>
 
-        <!-- Clear Button -->
         <Button Content="Clear" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Margin="10,110,0,0" Click="ClearData_Click"/>
 
-        <DataGrid Name="dtgResult" HorizontalAlignment="Left" Height="269" Margin="25,139,0,0" VerticalAlignment="Top" Width="631"/>
+        <Button Content="Calculate Average Scores" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="150,110,0,0" Click="CalculateAndDisplayMathScores_Click"/>
+
+        <Button Content="Highest A0 Score Nationwide" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="456,110,0,0" Click="CalculateHighestA0Nationwide_Click"/>
+        <Button Content="Highest A0 Score by Group" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="456,155,0,0" Click="CalculateHighestA0ByGroup_Click"/>
+
+        <DataGrid Name="dtgResult" HorizontalAlignment="Left" Height="329" Margin="25,202,0,0" VerticalAlignment="Top" Width="631"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,0,0">
+            <Button Content="Previous" Click="PreviousPage_Click" Width="75"/>
+            <Label Content="Page 1/1" x:Name="PageInfoLabel" Width="100" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <Button Content="Next" Click="NextPage_Click" Width="75"/>
+        </StackPanel>
     </Grid>
 </Window>

@@ -24,7 +24,7 @@ namespace ClassLibrary.Persistence
         public DbSet<StudentResult> StudentResults { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlServer(GetConnectionString());
+            => optionsBuilder.UseSqlServer("Server=(local); Database=StudentUniversityResults; Uid=sa; Pwd=12345;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False;");
 
         private string GetConnectionString()
         {

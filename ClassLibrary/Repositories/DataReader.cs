@@ -34,8 +34,29 @@ public class DataReader
     //    }
     //}
 
+    //public List<StudentResult> ReadFromFile(string filePath)
+    //{
+    //    using (var reader = new StreamReader(filePath))
+    //    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+    //    {
+    //        csv.Context.RegisterClassMap<StudentResultMap>();
+    //        var records = csv.GetRecords<StudentResult>();
+
+    //        foreach (var record in records)
+    //        {
+    //            _results.Add(record);
+    //            _queue.Add(record);
+    //        }
+    //    }
+
+    //    _queue.CompleteAdding();
+    //    return _results;
+    //}
+
     public List<StudentResult> ReadFromFile(string filePath)
     {
+        _results.Clear(); 
+
         using (var reader = new StreamReader(filePath))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
@@ -50,6 +71,7 @@ public class DataReader
         }
 
         _queue.CompleteAdding();
-        return _results;
+        return _results; 
     }
+
 }
