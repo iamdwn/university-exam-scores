@@ -8,6 +8,10 @@
         <Button Content="Import" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Margin="500,10,0,0" Click="ImportFile_Click"/>
         <Label Content="Elapsed Time: 0s" Name="ElapsedTimeLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0"/>
         <Label Content="Lines Inserted: 0" Name="LinesInsertedLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,80,0,0"/>
+
+        <!-- Clear Button -->
+        <Button Content="Clear" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Margin="10,110,0,0" Click="ClearData_Click"/>
+
         <DataGrid Name="dtgResult" HorizontalAlignment="Left" Height="269" Margin="25,139,0,0" VerticalAlignment="Top" Width="631"/>
     </Grid>
 </Window>

@@ -1,26 +1,52 @@
 ﻿using ClassLibrary.Entities;
 using CsvHelper;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Formats.Asn1;
 using System.Globalization;
-using System.IO;
-using System.Linq;
+using System.Collections.Concurrent;
 
 public class DataReader
 {
-    public (List<StudentResult> rows, double elapsedTime) ReadCsvFile(string filePath)
+    private readonly BlockingCollection<StudentResult> _queue;
+
+    public DataReader(BlockingCollection<StudentResult> queue)
+    {
+        _queue = queue;
+    }
+
+    //    public List<StudentResult> ReadCsvFile(string filePath)
+    //    {
+    //        using (var reader = new StreamReader(filePath))
+    //        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+    //        {
+    //            csv.Context.RegisterClassMap<StudentResultMap>();
+
+    //            var stopwatch = new Stopwatch();
+
+    //            var records = new List<StudentResult>();
+    //            while (csv.Read())
+    //            {
+    //                records.Add(csv.GetRecord<StudentResult>());
+    //            }
+
+    //            stopwatch.Stop();
+    //            return (records);
+    //        }
+    //    }
+    //}
+
+    public void ReadFromFile(string filePath)
     {
         using (var reader = new StreamReader(filePath))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
             csv.Context.RegisterClassMap<StudentResultMap>();
+            var records = csv.GetRecords<StudentResult>();
 
-            var records = csv.GetRecords<StudentResult>().ToList();
-            stopwatch.Stop();
-            return (records, stopwatch.ElapsedMilliseconds / 1000.0);
+            foreach (var record in records)
+            {
+                _queue.Add(record);
+            }
         }
+
+        _queue.CompleteAdding();
     }
 }
