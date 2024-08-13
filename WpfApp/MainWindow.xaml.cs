@@ -16,6 +16,7 @@ namespace WpfApp
     public partial class MainWindow : Window
     {
         private DispatcherTimer _statusTimer;
+        private DispatcherTimer _timer;
         private Stopwatch _stopwatch;
         private int _statusDotCount;
         private string selectedFilePath;
@@ -37,6 +38,17 @@ namespace WpfApp
                 Interval = TimeSpan.FromMilliseconds(1000)
             };
             _statusTimer.Tick += StatusTimer_Tick;
+
+            _timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1)
+            };
+            _timer.Tick += Timer_Tick;
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
         }
 
         private void StatusTimer_Tick(object sender, EventArgs e)
@@ -68,6 +80,7 @@ namespace WpfApp
             _stopwatch = Stopwatch.StartNew();
             _statusDotCount = 0;
             _statusTimer.Start();
+            _timer.Start();
 
             ////if (csvData != null && csvData.Count > 0)
             //var stopwatch = new Stopwatch();
@@ -109,9 +122,10 @@ namespace WpfApp
 
             _stopwatch.Stop();
             _statusTimer.Stop();
+            _timer.Stop();
 
             StatusTextBlock.Text = "Executed";
-            ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
+            //ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
             LinesInsertedLabel.Content = $"Lines Inserted: {rows}";
 
             dtgResult.ItemsSource = results;
@@ -129,6 +143,7 @@ namespace WpfApp
             _stopwatch = Stopwatch.StartNew();
             _statusDotCount = 0;
             _statusTimer.Start();
+            _timer.Start();
 
             using (var context = new SchoolContext())
             {
@@ -141,9 +156,10 @@ namespace WpfApp
 
             _stopwatch.Stop();
             _statusTimer.Stop();
+            _timer.Stop();
 
             StatusTextBlock.Text = "Executed";
-            ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
+            //ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
             LinesInsertedLabel.Content = "Lines Inserted: 0";
 
 
@@ -197,20 +213,20 @@ namespace WpfApp
                 var groupedResults = studentResults
                     .GroupBy(sr =>
                         {
-                        if (sr.Sbd.ToString().Length == 8)
-                        {
-                            return sr.Sbd.ToString().Substring(0, 2);
-                        }
-                        else if (sr.Sbd.ToString().Length == 7)
-                        {
-                            return sr.Sbd.ToString().Substring(0, 1); 
-                        }
-                        else
-                        {
-                            return null; 
-                        }
-                    })
-                    .Where(group => group.Key != null) 
+                            if (sr.Sbd.ToString().Length == 8)
+                            {
+                                return sr.Sbd.ToString().Substring(0, 2);
+                            }
+                            else if (sr.Sbd.ToString().Length == 7)
+                            {
+                                return sr.Sbd.ToString().Substring(0, 1);
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                        })
+                    .Where(group => group.Key != null)
                     .Select(group => new StudentGroupMathScore
                     {
                         GroupKey = GetProvince(group.Key),
@@ -328,6 +344,7 @@ namespace WpfApp
             _stopwatch = Stopwatch.StartNew();
             _statusDotCount = 0;
             _statusTimer.Start();
+            _timer.Start();
             using (var context = new SchoolContext())
             {
                 var studentResults = await context.StudentResults.ToListAsync();
@@ -360,9 +377,10 @@ namespace WpfApp
 
                 _stopwatch.Stop();
                 _statusTimer.Stop();
+                _timer.Stop();
 
                 StatusTextBlock.Text = "Executed";
-                ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
+                //ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
 
                 if (groupedResults != null)
                 {
@@ -381,6 +399,7 @@ namespace WpfApp
             _stopwatch = Stopwatch.StartNew();
             _statusDotCount = 0;
             _statusTimer.Start();
+            _timer.Start();
             using (var context = new SchoolContext())
             {
                 var studentResults = await context.StudentResults.ToListAsync();
@@ -390,15 +409,15 @@ namespace WpfApp
                     {
                         if (sr.Sbd.ToString().Length == 8)
                         {
-                            return sr.Sbd.ToString().Substring(0, 2); 
+                            return sr.Sbd.ToString().Substring(0, 2);
                         }
                         else if (sr.Sbd.ToString().Length == 7)
                         {
-                            return sr.Sbd.ToString().Substring(0, 1); 
+                            return sr.Sbd.ToString().Substring(0, 1);
                         }
                         else
                         {
-                            return null; 
+                            return null;
                         }
                     })
                     .Where(group => group.Key != null)
@@ -414,9 +433,10 @@ namespace WpfApp
                 //sw.Stop();
                 _stopwatch.Stop();
                 _statusTimer.Stop();
+                _timer.Stop();
 
                 StatusTextBlock.Text = "Executed";
-                ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
+                //ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
 
                 if (groupedResults.Any())
                 {
