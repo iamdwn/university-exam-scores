@@ -13,27 +13,6 @@ public class DataReader
         _queue = queue;
     }
 
-    //    public List<StudentResult> ReadCsvFile(string filePath)
-    //    {
-    //        using (var reader = new StreamReader(filePath))
-    //        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-    //        {
-    //            csv.Context.RegisterClassMap<StudentResultMap>();
-
-    //            var stopwatch = new Stopwatch();
-
-    //            var records = new List<StudentResult>();
-    //            while (csv.Read())
-    //            {
-    //                records.Add(csv.GetRecord<StudentResult>());
-    //            }
-
-    //            stopwatch.Stop();
-    //            return (records);
-    //        }
-    //    }
-    //}
-
     //public List<StudentResult> ReadFromFile(string filePath)
     //{
     //    using (var reader = new StreamReader(filePath))

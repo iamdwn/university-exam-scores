@@ -22,8 +22,6 @@ namespace WpfApp
         private string selectedFilePath;
         private DataReader dataReader;
         private DataImporter dataImporter;
-        private List<StudentResult> csvData;
-        private double elapsedTime;
         private int rows;
         private List<StudentResult> results;
         private int _currentPage = 1;
@@ -82,31 +80,6 @@ namespace WpfApp
             _statusTimer.Start();
             _timer.Start();
 
-            ////if (csvData != null && csvData.Count > 0)
-            //var stopwatch = new Stopwatch();
-            //stopwatch.Start();
-
-            //if (!string.IsNullOrEmpty(FilePathTextBox.Text))
-            //{
-            //    //var (rows, elapsedTime, linesInserted) = await dataImporter.ImportStudentResultsAsync(FilePathTextBox.Text);
-            //    var (rows, linesInserted) =  dataImporter.ImportData(csvData);
-
-
-            //    this.Dispatcher.Invoke(() =>
-            //    {
-            //        stopwatch.Stop();
-            //        dtgResult.ItemsSource = rows;
-            //        ElapsedTimeLabel.Content = $"Elapsed Time: {stopwatch}s";
-            //        LinesInsertedLabel.Content = $"Lines Inserted: {linesInserted}  ";
-            //    });
-
-            //    MessageBox.Show("Imported successful !", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Please select a CSV file first.", "No File Selected", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //}
-
             var queue = new BlockingCollection<StudentResult>();
             string filePath = FilePathTextBox.Text;
 
@@ -125,7 +98,6 @@ namespace WpfApp
             _timer.Stop();
 
             StatusTextBlock.Text = "Executed";
-            //ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
             LinesInsertedLabel.Content = $"Lines Inserted: {rows}";
 
             dtgResult.ItemsSource = results;
@@ -159,7 +131,6 @@ namespace WpfApp
             _timer.Stop();
 
             StatusTextBlock.Text = "Executed";
-            //ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
             LinesInsertedLabel.Content = "Lines Inserted: 0";
 
 
@@ -249,10 +220,6 @@ namespace WpfApp
 
         public string GetProvince(string provinceCode)
         {
-            //string provinceCode;
-            //if (sbd.ToString().Length == 7) provinceCode = sbd.ToString().Substring(0, 1);
-            //if (sbd.ToString().Length == 8) provinceCode = sbd.ToString().Substring(0, 2);
-
             var provinces = new Dictionary<string, string>
             {
                 {"1", "Hà Nội"},
@@ -380,7 +347,6 @@ namespace WpfApp
                 _timer.Stop();
 
                 StatusTextBlock.Text = "Executed";
-                //ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
 
                 if (groupedResults != null)
                 {
@@ -430,13 +396,11 @@ namespace WpfApp
                     .OrderByDescending(group => group.HighestA0Score)
                     .ToList();
 
-                //sw.Stop();
                 _stopwatch.Stop();
                 _statusTimer.Stop();
                 _timer.Stop();
 
                 StatusTextBlock.Text = "Executed";
-                //ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
 
                 if (groupedResults.Any())
                 {

@@ -12,14 +12,15 @@ using System.Linq;
 public class DataImporter
 {
     private readonly BlockingCollection<StudentResult> _queue;
-    private string _connectionString = "Server=(local); Database=StudentUniversityResults; Uid=sa; Pwd=12345;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False;";
-    private readonly IConfiguration _configuration;
+    private IConfiguration _configuration;
     private int rows;
+    //private string _connectionString = "Server=(local); Database=StudentUniversityResults; Uid=sa; Pwd=12345;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False;";
+    private string _connectionString = "";
 
     public DataImporter(BlockingCollection<StudentResult> queue, IConfiguration configuration)
     {
         _queue = queue;
-        _configuration = configuration;
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
     public DataImporter(BlockingCollection<StudentResult> queue)
@@ -52,7 +53,6 @@ public class DataImporter
 
     public int ImportToDatabase()
     {
-        //_connectionString = _configuration.GetConnectionString("DefaultConnection");
         List<StudentResult> batch = new List<StudentResult>();
 
 
@@ -77,7 +77,12 @@ public class DataImporter
 
     private int BulkInsert(List<StudentResult> studentResults)
     {
-        //_connectionString = _configuration.GetConnectionString("DefaultConnection");
+        _configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+
+        _connectionString = _configuration["ConnectionStrings:DefaultConnection"];
         using (SqlConnection connection = new SqlConnection(_connectionString))
         {
             connection.Open();
