@@ -200,7 +200,7 @@ namespace WpfApp
                     .Where(group => group.Key != null)
                     .Select(group => new StudentGroupMathScore
                     {
-                        GroupKey = GetProvince(group.Key),
+                        Province = GetProvince(group.Key),
                         AverageMathScore = Math.Round((decimal)group.Average(sr => sr.Toan), 2)
                     })
                     .OrderByDescending(group => group.AverageMathScore)
@@ -214,7 +214,7 @@ namespace WpfApp
 
         public class StudentGroupMathScore
         {
-            public string GroupKey { get; set; }
+            public string Province { get; set; }
             public decimal? AverageMathScore { get; set; }
         }
 
@@ -335,7 +335,7 @@ namespace WpfApp
                     .Where(group => group.Key != null)
                     .Select(group => new
                     {
-                        GroupKey = GetProvince(group.Key),
+                        Province = GetProvince(group.Key),
                         HighestA0Score = group.Max(sr => sr.Toan + sr.VatLi + sr.HoaHoc),
                         SBD = group.OrderByDescending(sr => sr.Toan + sr.VatLi + sr.HoaHoc).First().Sbd
                     })
@@ -389,7 +389,7 @@ namespace WpfApp
                     .Where(group => group.Key != null)
                     .Select(group => new
                     {
-                        GroupKey = GetProvince(group.Key),
+                        Province = GetProvince(group.Key),
                         HighestA0Score = group.Max(sr => sr.Toan + sr.VatLi + sr.HoaHoc),
                         SBD = group.OrderByDescending(sr => sr.Toan + sr.VatLi + sr.HoaHoc).First().Sbd
                     })
