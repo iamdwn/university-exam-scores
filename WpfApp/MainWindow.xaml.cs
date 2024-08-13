@@ -317,30 +317,17 @@ namespace WpfApp
                 var studentResults = await context.StudentResults.ToListAsync();
 
                 var groupedResults = studentResults
-                    .GroupBy(sr =>
-                    {
-                        if (sr.Sbd.ToString().Length == 8)
-                        {
-                            return sr.Sbd.ToString().Substring(0, 2);
-                        }
-                        else if (sr.Sbd.ToString().Length == 7)
-                        {
-                            return sr.Sbd.ToString().Substring(0, 1);
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    })
-                    .Where(group => group.Key != null)
                     .Select(group => new
                     {
-                        Province = GetProvince(group.Key),
-                        HighestA0Score = group.Max(sr => sr.Toan + sr.VatLi + sr.HoaHoc),
-                        SBD = group.OrderByDescending(sr => sr.Toan + sr.VatLi + sr.HoaHoc).First().Sbd
+                        Province = GetProvince(group.Sbd.ToString().Length == 8 ? group.Sbd.ToString().Substring(0, 2) : group.Sbd.ToString().Substring(0, 1)),
+                        group.Toan,
+                        group.VatLi,
+                        group.HoaHoc,
+                        HighestA0Score = group.Toan + group.VatLi + group.HoaHoc,
+                        SBD = group.Sbd
                     })
                     .OrderByDescending(group => group.HighestA0Score)
-                    .FirstOrDefault();
+                    .ToList();
 
                 _stopwatch.Stop();
                 _statusTimer.Stop();
@@ -350,7 +337,8 @@ namespace WpfApp
 
                 if (groupedResults != null)
                 {
-                    dtgResult.ItemsSource = new[] { groupedResults };
+                    //dtgResult.ItemsSource = new[] { groupedResults };
+                    dtgResult.ItemsSource = groupedResults;
                     MessageBox.Show($"Highest A0 Score Nationwide calculated successfully!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
