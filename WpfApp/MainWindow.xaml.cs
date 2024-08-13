@@ -9,11 +9,15 @@ using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Windows;
 using System.Windows.Forms.Design;
+using System.Windows.Threading;
 
 namespace WpfApp
 {
     public partial class MainWindow : Window
     {
+        private DispatcherTimer _statusTimer;
+        private Stopwatch _stopwatch;
+        private int _statusDotCount;
         private string selectedFilePath;
         private DataReader dataReader;
         private DataImporter dataImporter;
@@ -28,6 +32,17 @@ namespace WpfApp
         public MainWindow()
         {
             InitializeComponent();
+            _statusTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1000)
+            };
+            _statusTimer.Tick += StatusTimer_Tick;
+        }
+
+        private void StatusTimer_Tick(object sender, EventArgs e)
+        {
+            _statusDotCount = (_statusDotCount + 1) % 4;
+            StatusTextBlock.Text = $"Executing {new string('.', _statusDotCount)}";
         }
 
         private void SelectFile_Click(object sender, RoutedEventArgs e)
@@ -50,8 +65,9 @@ namespace WpfApp
 
         private async void ImportFile_Click(object sender, RoutedEventArgs e)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            _stopwatch = Stopwatch.StartNew();
+            _statusDotCount = 0;
+            _statusTimer.Start();
 
             ////if (csvData != null && csvData.Count > 0)
             //var stopwatch = new Stopwatch();
@@ -84,14 +100,18 @@ namespace WpfApp
             var reader = new DataReader(queue);
             var importer = new DataImporter(queue);
 
-            Task readTask = Task.Run(() => results = reader.ReadFromFile(filePath));
-            Task importTask = Task.Run(() => rows = importer.ImportToDatabase());
+            Task<List<StudentResult>> readTask = Task.Run(() => results = reader.ReadFromFile(filePath));
+            Task<int> importTask = Task.Run(() => rows = importer.ImportToDatabase());
 
-            Task.WaitAll(readTask, importTask);
+            //Task.WaitAll(readTask, importTask);
+            var result = await readTask;
+            var row = await importTask;
 
-            stopwatch.Stop();
+            _stopwatch.Stop();
+            _statusTimer.Stop();
 
-            ElapsedTimeLabel.Content = $"Elapsed Time: {stopwatch.ElapsedMilliseconds / 1000.0}s";
+            StatusTextBlock.Text = "Executed";
+            ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
             LinesInsertedLabel.Content = $"Lines Inserted: {rows}";
 
             dtgResult.ItemsSource = results;
@@ -106,8 +126,9 @@ namespace WpfApp
         {
             dtgResult.ItemsSource = null;
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            _stopwatch = Stopwatch.StartNew();
+            _statusDotCount = 0;
+            _statusTimer.Start();
 
             using (var context = new SchoolContext())
             {
@@ -118,9 +139,11 @@ namespace WpfApp
                 context.ChangeTracker.AutoDetectChangesEnabled = true;
             }
 
-            stopwatch.Stop();
+            _stopwatch.Stop();
+            _statusTimer.Stop();
 
-            ElapsedTimeLabel.Content = $"Elapsed Time: {stopwatch.ElapsedMilliseconds / 1000.0}s";
+            StatusTextBlock.Text = "Executed";
+            ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
             LinesInsertedLabel.Content = "Lines Inserted: 0";
 
 
@@ -302,7 +325,9 @@ namespace WpfApp
 
         private async void CalculateHighestA0Nationwide_Click(object sender, RoutedEventArgs e)
         {
-            Stopwatch sw = Stopwatch.StartNew();
+            _stopwatch = Stopwatch.StartNew();
+            _statusDotCount = 0;
+            _statusTimer.Start();
             using (var context = new SchoolContext())
             {
                 var studentResults = await context.StudentResults.ToListAsync();
@@ -332,8 +357,12 @@ namespace WpfApp
                     })
                     .OrderByDescending(group => group.HighestA0Score)
                     .FirstOrDefault();
-                sw.Stop();
-                ElapsedTimeLabel.Content = $"Elapsed Time: {sw.ElapsedMilliseconds / 1000.0}s";
+
+                _stopwatch.Stop();
+                _statusTimer.Stop();
+
+                StatusTextBlock.Text = "Executed";
+                ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
 
                 if (groupedResults != null)
                 {
@@ -349,7 +378,9 @@ namespace WpfApp
 
         private async void CalculateHighestA0ByGroup_Click(object sender, RoutedEventArgs e)
         {
-            Stopwatch sw = Stopwatch.StartNew();
+            _stopwatch = Stopwatch.StartNew();
+            _statusDotCount = 0;
+            _statusTimer.Start();
             using (var context = new SchoolContext())
             {
                 var studentResults = await context.StudentResults.ToListAsync();
@@ -380,8 +411,12 @@ namespace WpfApp
                     .OrderByDescending(group => group.HighestA0Score)
                     .ToList();
 
-                sw.Stop();
-                ElapsedTimeLabel.Content = $"Elapsed Time: {sw.ElapsedMilliseconds / 1000.0}s";
+                //sw.Stop();
+                _stopwatch.Stop();
+                _statusTimer.Stop();
+
+                StatusTextBlock.Text = "Executed";
+                ElapsedTimeLabel.Content = $"Elapsed Time: {_stopwatch.ElapsedMilliseconds / 1000.0}s";
 
                 if (groupedResults.Any())
                 {

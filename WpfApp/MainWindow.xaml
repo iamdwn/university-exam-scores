@@ -10,11 +10,11 @@
         <Label Content="Lines Inserted: 0" Name="LinesInsertedLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,80,0,0"/>
 
         <Button Content="Clear" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Margin="10,110,0,0" Click="ClearData_Click"/>
-
         <Button Content="Calculate Average Scores" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="150,110,0,0" Click="CalculateAndDisplayMathScores_Click"/>
-
         <Button Content="Highest A0 Score Nationwide" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="456,110,0,0" Click="CalculateHighestA0Nationwide_Click"/>
         <Button Content="Highest A0 Score by Group" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Margin="456,155,0,0" Click="CalculateHighestA0ByGroup_Click"/>
+
+        <TextBlock Name="StatusTextBlock" Text="Status: Idle" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,140,0,0" Width="650"/>
 
         <DataGrid Name="dtgResult" HorizontalAlignment="Left" Height="329" Margin="25,202,0,0" VerticalAlignment="Top" Width="631"/>
 
